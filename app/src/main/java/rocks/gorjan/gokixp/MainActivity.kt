@@ -524,6 +524,7 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             AppTheme.WindowsClassic -> Pair(KEY_WALLPAPER_CLASSIC_PATH, KEY_WALLPAPER_CLASSIC_URI)
             AppTheme.WindowsXP -> Pair(KEY_WALLPAPER_XP_PATH, KEY_WALLPAPER_XP_URI)
             AppTheme.WindowsVista -> Pair(KEY_WALLPAPER_VISTA_PATH, KEY_WALLPAPER_VISTA_URI)
+            AppTheme.Windows11 -> Pair("wallpaper_11_path", "wallpaper_11_uri")
         }
     }
 
@@ -534,7 +535,8 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
         return when (themeManager.getSelectedTheme()) {
             AppTheme.WindowsClassic -> "wallpapers/Windows ME (m).jpg"
             AppTheme.WindowsXP -> "wallpapers/Bliss (m).jpg"
-            AppTheme.WindowsVista -> "wallpapers/Windows Vista (m).jpg" // Can be changed to Vista default later
+            AppTheme.WindowsVista -> "wallpapers/Windows Vista (m).jpg"
+            AppTheme.Windows11 -> "wallpapers/Windows Vista (m).jpg"
         }
     }
 
@@ -546,6 +548,7 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             AppTheme.WindowsClassic -> "custom_icons_98"
             AppTheme.WindowsXP -> "custom_icons"
             AppTheme.WindowsVista -> "custom_icons_vista"
+            AppTheme.Windows11 -> "custom_icons_11"
         }
     }
 
@@ -556,7 +559,8 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
         return when (themeManager.getSelectedTheme()) {
             AppTheme.WindowsClassic -> R.drawable.win98_start_menu_border
             AppTheme.WindowsXP -> R.drawable.button_xp_background
-            AppTheme.WindowsVista -> R.drawable.button_xp_background // Can be changed to Vista button later
+            AppTheme.WindowsVista -> R.drawable.button_xp_background
+            AppTheme.Windows11 -> R.drawable.win11_button_background
         }
     }
 
@@ -567,7 +571,8 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
         return when (themeManager.getSelectedTheme()) {
             AppTheme.WindowsClassic -> R.drawable.display_98
             AppTheme.WindowsXP -> R.drawable.display_xp
-            AppTheme.WindowsVista -> R.drawable.display_xp // Can be changed to Vista icon later
+            AppTheme.WindowsVista -> R.drawable.display_xp
+            AppTheme.Windows11 -> R.drawable.display_xp
         }
     }
 
@@ -579,6 +584,7 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             AppTheme.WindowsClassic -> if (isMuted) R.drawable.mute_98 else R.drawable.sound_98
             AppTheme.WindowsXP -> if (isMuted) R.drawable.mute else R.drawable.sound
             AppTheme.WindowsVista -> if (isMuted) R.drawable.mute_vista else R.drawable.sound_vista
+            AppTheme.Windows11 -> if (isMuted) R.drawable.mute_vista else R.drawable.sound_vista
         }
     }
 
@@ -904,13 +910,10 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
     }
 
     private fun updateSystemTrayToggleIcon(toggleButton: ImageView?, isVisible: Boolean) {
-        // Update icon based on visibility state and theme
-        val currentTheme = themeManager.getSelectedTheme()
+        // Use Vista-style icons for Win11 (they work well with tinting)
         val iconRes = when {
-            currentTheme is AppTheme.WindowsVista && isVisible -> R.drawable.system_tray_collapse_vista
-            currentTheme is AppTheme.WindowsVista && !isVisible -> R.drawable.system_tray_expand_vista
-            isVisible -> R.drawable.system_tray_collapse_xp
-            else -> R.drawable.system_tray_expand_xp
+            isVisible -> R.drawable.system_tray_collapse_vista
+            else -> R.drawable.system_tray_expand_vista
         }
         toggleButton?.setImageResource(iconRes)
     }
@@ -6798,6 +6801,7 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             AppTheme.WindowsClassic -> R.drawable.win98_start_menu_border
             AppTheme.WindowsXP -> R.drawable.button_xp_background
             AppTheme.WindowsVista -> R.drawable.button_xp_background
+            AppTheme.Windows11 -> R.drawable.win11_button_background
         }
     }
 
@@ -11324,9 +11328,9 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             quickGlanceWidget.refreshData()
         }
 
-        // Restore start menu adapters font to Tahoma
-        appsAdapter?.onThemeChanged(AppTheme.WindowsVista)
-        commandsAdapter?.onThemeChanged(AppTheme.WindowsVista)
+        // Restore start menu adapters font
+        appsAdapter?.onThemeChanged(AppTheme.Windows11)
+        commandsAdapter?.onThemeChanged(AppTheme.Windows11)
 
         // Restore recycle bin icon to Windows Vista version
         if (::recycleBin.isInitialized) {
@@ -11345,6 +11349,70 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
 
         // Update dialog backgrounds for future dialogs - store theme preference
         // Dialogs will check this when they're created
+    }
+
+    private fun applyWindows11Theme() {
+        Log.d("MainActivity", "Applying Windows 11 theme")
+
+        // Swap to Windows 11 taskbar layout
+        swapTaskbarLayout(R.layout.taskbar_11)
+
+        // Set up system tray toggle
+        setupSystemTrayToggle()
+
+        // Respect saved visibility
+        val systemTrayToggleArea = findViewById<LinearLayout>(R.id.system_tray_toggle_area)
+        val savedVisibility = isSystemTrayVisible()
+        systemTrayToggleArea?.visibility = if (savedVisibility) View.VISIBLE else View.GONE
+
+        val systemTrayToggle = findViewById<ImageView>(R.id.system_tray_toggle)
+        updateSystemTrayToggleIcon(systemTrayToggle, savedVisibility)
+
+        // Reload start menu with Win11 layout
+        setupStartMenu("Windows 11")
+
+        // Update context menu
+        contextMenu.setThemeBackground(false)
+
+        // Update desktop icon fonts
+        desktopIconViews.forEach { iconView ->
+            iconView.setThemeFont(false)
+        }
+
+        // Reload custom icons
+        loadCustomIconMappings()
+        updateAllCustomIcons()
+
+        // Quick glance widget
+        if (::quickGlanceWidget.isInitialized) {
+            quickGlanceWidget.setThemeFont(false)
+            quickGlanceWidget.refreshData()
+        }
+
+        // Start menu adapters
+        appsAdapter?.onThemeChanged(AppTheme.Windows11)
+        commandsAdapter?.onThemeChanged(AppTheme.Windows11)
+
+        // Recycle bin
+        if (::recycleBin.isInitialized) {
+            recycleBin.setThemeIcon(false)
+        }
+
+        // Folder icons
+        desktopIconViews.forEach { iconView ->
+            if (iconView is FolderView) {
+                val packageName = iconView.getDesktopIcon()?.packageName
+                if (packageName != null && !customIconMappings.containsKey(packageName)) {
+                    iconView.setThemeIcon(false)
+                }
+            }
+        }
+
+        // Set up search button in taskbar
+        val searchButton = findViewById<LinearLayout>(R.id.search_taskbar_button)
+        searchButton?.setOnClickListener {
+            launchWebSearch()
+        }
     }
 
     private fun setupStartBannerCycling() {
@@ -11573,6 +11641,9 @@ class MainActivity : AppCompatActivity(), AppChangeListener {
             }
             "Windows Vista" -> {
                 applyWindowsVistaTheme()
+            }
+            else -> {
+                applyWindows11Theme()
             }
         }
 

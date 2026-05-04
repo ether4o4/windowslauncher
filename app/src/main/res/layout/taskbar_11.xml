@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:elevation="150dp">
+
+    <!-- Taskbar background with rounded top corners -->
+    <View
+        android:id="@+id/taskbar_background"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/win11_taskbar_background"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp" />
+
+    <!-- Content container -->
+    <RelativeLayout
+        android:id="@+id/taskbar_content"
+        android:layout_width="match_parent"
+        android:layout_height="52dp">
+
+        <!-- Centered taskbar icons area -->
+        <LinearLayout
+            android:id="@+id/taskbar_center_icons"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp">
+
+            <!-- Start Button (Windows icon) -->
+            <ImageView
+                android:id="@+id/start_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="8dp"
+                android:contentDescription="Start"
+                android:src="@drawable/logo_vista"
+                android:scaleType="fitCenter"
+                android:background="@drawable/win11_taskbar_button_background"
+                tools:ignore="HardcodedText" />
+
+            <!-- Search button -->
+            <LinearLayout
+                android:id="@+id/search_taskbar_button"
+                android:layout_width="180dp"
+                android:layout_height="34dp"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/win11_search_background"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_run_scaled"
+                    android:tint="@color/win11_search_text"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Search"
+                    android:textColor="@color/win11_search_text"
+                    android:textSize="13sp"
+                    android:fontFamily="@font/segoeui_regular" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Running apps area (left of center, appears dynamically) -->
+        <LinearLayout
+            android:id="@+id/taskbar_empty_space"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@id/taskbar_center_icons"
+            android:layout_toStartOf="@id/system_tray_wrapper"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:gravity="start|center_vertical"
+            android:paddingStart="4dp" />
+
+        <!-- System Tray (right side) -->
+        <LinearLayout
+            android:id="@+id/system_tray_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/system_tray"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="8dp">
+
+                <LinearLayout
+                    android:id="@+id/system_tray_toggle_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <!-- Weather -->
+                    <TextView
+                        android:id="@+id/weather_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="?"
+                        android:textColor="@color/win11_text_primary"
+                        android:textSize="12sp"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp"
+                        android:fontFamily="@font/segoeui_regular" />
+
+                    <!-- Date -->
+                    <LinearLayout
+                        android:id="@+id/date_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp"
+                        android:background="@drawable/win11_taskbar_button_background"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <TextView
+                            android:id="@+id/date_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="26"
+                            android:textColor="@color/win11_text_primary"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/segoeui_regular" />
+
+                        <TextView
+                            android:id="@+id/date_ordinal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="th"
+                            android:textColor="@color/win11_text_primary"
+                            android:textSize="8sp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginStart="1dp"
+                            android:fontFamily="@font/segoeui_regular" />
+                    </LinearLayout>
+
+                    <!-- Volume -->
+                    <LinearLayout
+                        android:id="@+id/volume_icon_wrapper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/volume_icon"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/sound"
+                            android:tint="@color/win11_text_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/update_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/update_available" />
+                </LinearLayout>
+
+                <!-- Clock -->
+                <TextView
+                    android:id="@+id/clock_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="01:23"
+                    android:textColor="@color/win11_text_primary"
+                    android:textSize="12sp"
+                    android:minWidth="44dp"
+                    android:paddingStart="6dp"
+                    android:paddingEnd="8dp"
+                    android:fontFamily="@font/segoeui_regular" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- System tray collapse toggle -->
+        <ImageView
+            android:id="@+id/system_tray_toggle"
+            android:layout_width="20dp"
+            android:layout_height="48dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_toStartOf="@id/system_tray_wrapper"
+            android:layout_marginEnd="-8dp"
+            android:src="@drawable/system_tray_collapse_vista"
+            android:tint="@color/win11_text_secondary" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -41,6 +41,10 @@ class DrawableManager(private val context: Context) {
                 ContextCompat.getDrawable(context, R.drawable.context_menu_background)
                     ?: ColorDrawable(Color.WHITE)
             }
+            AppTheme.Windows11 -> {
+                ContextCompat.getDrawable(context, R.drawable.win11_start_menu_background)
+                    ?: ColorDrawable(Color.parseColor("#2D2D2D"))
+            }
         }
     }
 
@@ -151,6 +155,7 @@ class DrawableManager(private val context: Context) {
         AppTheme.WindowsClassic -> R.drawable.scrollbar_track_98
         AppTheme.WindowsXP -> R.drawable.scrollbar_track_xp
         AppTheme.WindowsVista -> R.drawable.scrollbar_track_xp
+        AppTheme.Windows11 -> R.drawable.win11_scrollbar_track
     }
 
     /**
@@ -163,5 +168,6 @@ class DrawableManager(private val context: Context) {
         AppTheme.WindowsClassic -> R.drawable.win98_start_menu_border
         AppTheme.WindowsXP -> R.drawable.scrollbar_thumb_xp
         AppTheme.WindowsVista -> R.drawable.scrollbar_thumb_xp
+        AppTheme.Windows11 -> R.drawable.win11_scrollbar_thumb
     }
 }

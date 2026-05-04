@@ -33,14 +33,17 @@ class FloatingWindowManager(private val context: Context, private val container:
         // Set the new window as focused
         windowsDialog.setFocused()
 
-        // Apply fade-in animation for Vista
-        if (themeManager.getSelectedTheme() is AppTheme.WindowsVista) {
-            windowsDialog.alpha = 0f
-            windowsDialog.animate()
-                .alpha(1f)
-                .setDuration(150)
-                .start()
-        }
+        // Smooth scale + fade animation for Win11
+        windowsDialog.alpha = 0f
+        windowsDialog.scaleX = 0.95f
+        windowsDialog.scaleY = 0.95f
+        windowsDialog.animate()
+            .alpha(1f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.DecelerateInterpolator(1.5f))
+            .start()
     }
 
     fun removeWindow(windowsDialog: WindowsDialog) {
@@ -48,22 +51,28 @@ class FloatingWindowManager(private val context: Context, private val container:
             // Unregister from taskbar before removing
             windowsDialog.unregisterFromTaskbar()
 
-            // Apply fade-out animation for Vista
-            if (themeManager.getSelectedTheme() is AppTheme.WindowsVista) {
-                windowsDialog.animate()
-                    .alpha(0f)
-                    .setDuration(150)
-                    .withEndAction {
+            // Smooth scale + fade out animation
+            windowsDialog.animate()
+                .alpha(0f)
+                .scaleX(0.95f)
+                .scaleY(0.95f)
+                .setDuration(150)
+                .setInterpolator(android.view.animation.AccelerateInterpolator(1.5f))
+                .withEndAction {
+                    try {
                         container.removeView(windowsDialog)
                         activeWindows.remove(windowsDialog)
+                    } catch (e: Exception) {
+                        // Window might already be removed
                     }
-                    .start()
-            } else {
-                container.removeView(windowsDialog)
-                activeWindows.remove(windowsDialog)
-            }
+                }
+                .start()
         } catch (e: Exception) {
             // Window might already be removed
+            try {
+                container.removeView(windowsDialog)
+                activeWindows.remove(windowsDialog)
+            } catch (_: Exception) {}
         }
     }
 

@@ -22,401 +22,174 @@ sealed class AppTheme {
         override fun toString() = "Windows Vista"
     }
 
-    // Future themes can be added here:
-    // object Windows7 : AppTheme() {
-    //     override fun toString() = "Windows 7"
-    // }
+    object Windows11 : AppTheme() {
+        override fun toString() = "Windows 11"
+    }
 
     companion object {
         /**
          * Converts string from SharedPreferences to AppTheme.
-         * Maintains backward compatibility with existing user preferences.
+         * Always returns Windows11 now — legacy themes removed.
          */
-        fun fromString(value: String?): AppTheme = when (value) {
-            "Windows Classic" -> WindowsClassic
-            "Windows Vista" -> WindowsVista
-            "Windows XP" -> WindowsXP
-            else -> WindowsXP // Default to XP if unknown
-        }
+        fun fromString(value: String?): AppTheme = Windows11
 
         /**
          * Returns all available themes.
          */
-        fun all(): List<AppTheme> = listOf(WindowsXP, WindowsClassic, WindowsVista)
+        fun all(): List<AppTheme> = listOf(Windows11)
     }
 }
 
 /**
  * Centralized theme management class.
- * Handles theme selection, persistence, and resource mapping.
- *
- * BACKWARD COMPATIBILITY:
- * - Uses existing SharedPreferences key "selected_theme"
- * - Preserves string values "Windows XP" and "Windows Classic"
- * - No breaking changes to user settings
+ * Now hardcoded to Windows 11 dark theme with user-customizable accent color.
  */
 class ThemeManager(private val context: Context) {
     private val prefs = context.getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
 
-
     /**
-     * Gets the currently selected theme from SharedPreferences.
-     * Reads the same key used by legacy code.
+     * Always returns Windows 11 theme.
      */
-    fun getSelectedTheme(): AppTheme {
-        val stored = prefs.getString(KEY_SELECTED_THEME, "Windows XP")
-        return AppTheme.fromString(stored)
-    }
+    fun getSelectedTheme(): AppTheme = AppTheme.Windows11
 
     /**
-     * Sets the selected theme in SharedPreferences.
-     * Writes the same key and string values as legacy code.
+     * Sets the selected theme (no-op now — always Win11).
      */
     fun setSelectedTheme(theme: AppTheme) {
         prefs.edit {
-            putString(KEY_SELECTED_THEME, theme.toString())
+            putString(KEY_SELECTED_THEME, AppTheme.Windows11.toString())
         }
     }
 
-    /**
-     * Returns true if the current theme is Windows Classic (98).
-     * Convenience method for boolean checks.
-     */
-    fun isClassicTheme(): Boolean = getSelectedTheme() is AppTheme.WindowsClassic
+    fun isClassicTheme(): Boolean = false
+    fun isXPTheme(): Boolean = false
+    fun isVistaTheme(): Boolean = false
+    fun isWin11Theme(): Boolean = true
+
+    // ========== Accent Color System ==========
 
     /**
-     * Returns true if the current theme is Windows XP.
-     * Convenience method for boolean checks.
+     * Gets the user's accent color as an ARGB int.
+     * Default: red (#FFFF4444)
      */
-    fun isXPTheme(): Boolean = getSelectedTheme() is AppTheme.WindowsXP
-    fun isVistaTheme(): Boolean = getSelectedTheme() is AppTheme.WindowsVista
+    fun getAccentColor(): Int {
+        return prefs.getInt(KEY_ACCENT_COLOR, 0xFFFF4444.toInt())
+    }
+
+    /**
+     * Sets the user's accent color.
+     */
+    fun setAccentColor(color: Int) {
+        prefs.edit { putInt(KEY_ACCENT_COLOR, color) }
+    }
 
     // ========== Resource Mapping Methods ==========
-    // These methods centralize all theme-specific resource lookups
 
-    /**
-     * Gets the theme style resource ID for the given theme.
-     */
-    fun getThemeStyleRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.style.Theme_GokiXP_Classic
-        AppTheme.WindowsXP -> R.style.Base_Theme_GokiXP
-        AppTheme.WindowsVista -> R.style.Theme_GokiXP_Vista
-    }
+    fun getThemeStyleRes(theme: AppTheme): Int = R.style.Theme_GokiXP_Win11
 
-    /**
-     * Gets the taskbar layout resource ID for the given theme.
-     */
-    fun getTaskbarLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.taskbar_98
-        AppTheme.WindowsXP -> R.layout.taskbar_xp
-        AppTheme.WindowsVista -> R.layout.taskbar_vista
-    }
+    fun getTaskbarLayoutRes(theme: AppTheme): Int = R.layout.taskbar_11
 
-    /**
-     * Gets the start menu layout resource ID for the given theme.
-     */
-    fun getStartMenuLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.start_menu_98
-        AppTheme.WindowsXP -> R.layout.start_menu_xp
-        AppTheme.WindowsVista -> R.layout.start_menu_vista
-    }
+    fun getStartMenuLayoutRes(theme: AppTheme): Int = R.layout.start_menu_11
 
-    /**
-     * Gets the dialog content layout resource ID for the given theme.
-     */
-    fun getDialogLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.windows_dialog_content_98
-        AppTheme.WindowsXP -> R.layout.windows_dialog_content_xp
-        AppTheme.WindowsVista -> R.layout.windows_dialog_content_vista
-    }
+    fun getDialogLayoutRes(theme: AppTheme): Int = R.layout.windows_dialog_content_11
 
-    /**
-     * Gets the spinner item layout resource ID for the given theme.
-     */
-    fun getSpinnerItemLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.spinner_item_classic
-        AppTheme.WindowsXP -> R.layout.spinner_item_xp
-        AppTheme.WindowsVista -> R.layout.spinner_item_vista
-    }
+    fun getSpinnerItemLayoutRes(theme: AppTheme): Int = R.layout.spinner_item_11
 
-    /**
-     * Gets the spinner dropdown layout resource ID for the given theme.
-     */
-    fun getSpinnerDropdownLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.spinner_dropdown_item_classic
-        AppTheme.WindowsXP -> R.layout.spinner_dropdown_item_xp
-        AppTheme.WindowsVista -> R.layout.spinner_dropdown_item_vista
-    }
+    fun getSpinnerDropdownLayoutRes(theme: AppTheme): Int = R.layout.spinner_dropdown_item_11
 
-    fun getIELayout(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.layout.program_internet_explorer
-        AppTheme.WindowsXP -> R.layout.program_internet_explorer
-        AppTheme.WindowsVista -> R.layout.program_internet_explorer_7
-    }
+    fun getIELayout(): Int = R.layout.program_internet_explorer_7
 
+    fun getIEIcon(): Int = R.drawable.ie7
 
+    fun getWindowsIcon(): Int = R.drawable.logo_vista
 
-    fun getIEIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.ie6
-        AppTheme.WindowsXP -> R.drawable.ie6
-        AppTheme.WindowsVista -> R.drawable.ie7
-    }
+    fun getRegeditIcon(): Int = R.drawable.regedit_icon_vista
 
-    fun getWindowsIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.windows_logo
-        AppTheme.WindowsXP -> R.drawable.xp_logo
-        AppTheme.WindowsVista -> R.drawable.logo_vista
-    }
+    fun getSolitareIcon(): Int = R.drawable.solitare_icon_vista
 
+    fun getWinampIcon(): Int = R.drawable.winamp_icon_xp
 
+    fun getWmpIcon(): Int = R.drawable.wmp_vista_icon
 
-    fun getRegeditIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.regedit_icon_98
-        AppTheme.WindowsXP -> R.drawable.regedit_icon_xp
-        AppTheme.WindowsVista -> R.drawable.regedit_icon_vista
-    }
+    fun getPhotosIcon(): Int = R.drawable.photos_vista_icon
 
-    fun getSolitareIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.solitare_icon
-        AppTheme.WindowsXP -> R.drawable.solitare_icon
-        AppTheme.WindowsVista -> R.drawable.solitare_icon_vista
-    }
+    fun getMinesweeperIcon(): Int = R.drawable.minesweeper_icon_vista
 
+    fun getNotepadIcon(): Int = R.drawable.notepad_icon_vista
 
-    fun getWinampIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.winamp_icon_98
-        AppTheme.WindowsXP -> R.drawable.winamp_icon_xp
-        AppTheme.WindowsVista -> R.drawable.winamp_icon_xp
-    }
+    fun getClockIcon(): Int = R.drawable.icon_clock_vista
 
-    fun getWmpIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.wmp_98_icon
-        AppTheme.WindowsXP -> R.drawable.wmp_xp_icon
-        AppTheme.WindowsVista -> R.drawable.wmp_vista_icon
-    }
+    fun getMsnIcon(): Int = R.drawable.msn_icon_vista
 
-    fun getPhotosIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.photos_98_icon
-        AppTheme.WindowsXP -> R.drawable.photos_xp_icon
-        AppTheme.WindowsVista -> R.drawable.photos_vista_icon
-    }
+    fun getMyComputerIcon(): Int = R.drawable.my_computer_vista_icon
 
-    fun getMinesweeperIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.minesweeper_icon_98
-        AppTheme.WindowsXP -> R.drawable.minesweeper_icon_xp
-        AppTheme.WindowsVista -> R.drawable.minesweeper_icon_vista
-    }
+    fun getFileGenericIcon(): Int = R.drawable.file_generic_vista
 
+    fun getFileImageIcon(): Int = R.drawable.file_image_vista
 
-    fun getNotepadIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.notepad_icon_98
-        AppTheme.WindowsXP -> R.drawable.notepad_icon_xp
-        AppTheme.WindowsVista -> R.drawable.notepad_icon_vista
-    }
+    fun getPDFImageIcon(): Int = R.drawable.file_pdf_vista
 
+    fun getFileAudioIcon(): Int = R.drawable.file_audio_vista
 
-    fun getClockIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.icon_clock_98
-        AppTheme.WindowsXP -> R.drawable.icon_clock_xp
-        AppTheme.WindowsVista -> R.drawable.icon_clock_vista
-    }
+    fun getFileVideoIcon(): Int = R.drawable.file_video_vista
 
-    fun getMsnIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.msn_icon
-        AppTheme.WindowsXP -> R.drawable.msn_icon
-        AppTheme.WindowsVista -> R.drawable.msn_icon_vista
-    }
+    fun getDriveFloppyIcon(): Int = R.drawable.drive_floppy_vista
 
-    fun getMyComputerIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.my_computer_98_icon
-        AppTheme.WindowsXP -> R.drawable.my_computer_xp_icon
-        AppTheme.WindowsVista -> R.drawable.my_computer_vista_icon
-    }
+    fun getDriveLocalIcon(): Int = R.drawable.drive_local_vista
 
-    fun getFileGenericIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.file_generic_98
-        AppTheme.WindowsXP -> R.drawable.file_generic_xp
-        AppTheme.WindowsVista -> R.drawable.file_generic_vista
-    }
+    fun getDriveOpticalIcon(): Int = R.drawable.drive_optical_vista
 
-    fun getFileImageIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.file_image_98
-        AppTheme.WindowsXP -> R.drawable.file_image_xp
-        AppTheme.WindowsVista -> R.drawable.file_image_vista
-    }
+    fun getWmpLayout(): Int = R.layout.program_wmp_vista
 
+    fun getMaximizeIcon(): Int = R.drawable.window_maximize
 
-    fun getPDFImageIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.file_pdf_98
-        AppTheme.WindowsXP -> R.drawable.file_pdf_xp
-        AppTheme.WindowsVista -> R.drawable.file_pdf_vista
-    }
+    fun getRestoreIcon(): Int = R.drawable.window_maximize
 
-    fun getFileAudioIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.file_audio_98
-        AppTheme.WindowsXP -> R.drawable.file_audio_xp
-        AppTheme.WindowsVista -> R.drawable.file_audio_vista
-    }
+    fun getTaskbarButtonLayoutRes(theme: AppTheme): Int = R.layout.taskbar_button_11
 
-    fun getFileVideoIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.file_video_98
-        AppTheme.WindowsXP -> R.drawable.file_video_xp
-        AppTheme.WindowsVista -> R.drawable.file_video_vista
-    }
-
-    fun getDriveFloppyIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.drive_floppy_98
-        AppTheme.WindowsXP -> R.drawable.drive_floppy_xp
-        AppTheme.WindowsVista -> R.drawable.drive_floppy_vista
-    }
-
-    fun getDriveLocalIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.drive_local_98
-        AppTheme.WindowsXP -> R.drawable.drive_local_xp
-        AppTheme.WindowsVista -> R.drawable.drive_local_vista
-    }
-
-    fun getDriveOpticalIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.drive_optical_98
-        AppTheme.WindowsXP -> R.drawable.drive_optical_xp
-        AppTheme.WindowsVista -> R.drawable.drive_optical_vista
-    }
-
-    fun getWmpLayout(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.layout.program_wmp_98
-        AppTheme.WindowsXP -> R.layout.program_wmp_xp
-        AppTheme.WindowsVista -> R.layout.program_wmp_vista
-    }
-
-    fun getMaximizeIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.win98_title_bar_maximize
-        AppTheme.WindowsXP -> R.drawable.xp_title_bar_maximize
-        AppTheme.WindowsVista -> R.drawable.vista_title_bar_maximize
-    }
-
-    fun getRestoreIcon(): Int = when (getSelectedTheme()){
-        AppTheme.WindowsClassic -> R.drawable.win98_title_bar_restore
-        AppTheme.WindowsXP -> R.drawable.xp_title_bar_restore
-        AppTheme.WindowsVista -> R.drawable.vista_title_bar_restore
-    }
-
-    /**
-     * Gets the taskbar button layout resource ID for the given theme.
-     */
-    fun getTaskbarButtonLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.taskbar_button_98
-        AppTheme.WindowsXP -> R.layout.taskbar_button_xp
-        AppTheme.WindowsVista -> R.layout.taskbar_button_vista
-    }
-
-    /**
-     * Gets the Windows Explorer layout resource ID for the given theme.
-     */
-    fun getWindowsExplorerLayoutRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.layout.windows_explorer_98
-        AppTheme.WindowsXP -> R.layout.windows_explorer_xp
-        AppTheme.WindowsVista -> R.layout.windows_explorer_vista
-    }
+    fun getWindowsExplorerLayoutRes(theme: AppTheme): Int = R.layout.windows_explorer_11
 
     // ========== Icon Resource Mappings ==========
 
-    /**
-     * Gets the folder icon drawable resource ID for the given theme.
-     */
-    fun getFolderIconRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.drawable.folder_98
-        AppTheme.WindowsXP -> R.drawable.folder_xp
-        AppTheme.WindowsVista -> R.drawable.folder_vista
-    }
+    fun getFolderIconRes(theme: AppTheme): Int = R.drawable.folder_vista
 
-    /**
-     * Gets the recycle bin icon drawable resource ID for the given theme.
-     * @param isEmpty Whether the recycle bin is empty
-     */
-    fun getRecycleBinIconRes(theme: AppTheme, isEmpty: Boolean): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.drawable.recycle_98
-        AppTheme.WindowsXP -> R.drawable.recycle
-        AppTheme.WindowsVista -> R.drawable.recycle_vista
-    }
+    fun getRecycleBinIconRes(theme: AppTheme, isEmpty: Boolean): Int = R.drawable.recycle_vista
 
-    /**
-     * Gets the start button drawable resource ID for the given theme.
-     */
-    fun getStartButtonRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.drawable.start_98
-        AppTheme.WindowsXP -> R.drawable.start
-        AppTheme.WindowsVista -> R.drawable.start_vista
-    }
+    fun getStartButtonRes(theme: AppTheme): Int = R.drawable.logo_vista
 
     // ========== Font Resource Mappings ==========
 
-    /**
-     * Gets the primary font family resource ID for the given theme.
-     */
-    fun getPrimaryFontRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.font.micross_font_family
-        AppTheme.WindowsXP -> R.font.tahoma_font_family
-        AppTheme.WindowsVista -> R.font.tahoma_font_family  // Use Tahoma for now, can be replaced with Segoe UI
-    }
+    fun getPrimaryFontRes(theme: AppTheme): Int = R.font.segoeui_font_family
 
-    /**
-     * Gets the bold font resource ID for the given theme.
-     */
-    fun getBoldFontRes(theme: AppTheme): Int = when (theme) {
-        AppTheme.WindowsClassic -> R.font.micross_block_bold
-        AppTheme.WindowsXP -> R.font.tahoma
-        AppTheme.WindowsVista -> R.font.tahoma  // Use Tahoma for now
-    }
+    fun getBoldFontRes(theme: AppTheme): Int = R.font.segoeui_bold
 
     // ========== Scrollbar Styling ==========
 
-    /**
-     * Applies themed scrollbar drawables to a view that supports scrollbars.
-     * Supports Windows XP, Windows Classic, and Windows Vista themes.
-     *
-     * @param view The view to apply scrollbars to (must support scrollbars, e.g., EditText, RecyclerView)
-     * @param theme The theme to apply (optional, defaults to current selected theme)
-     */
     fun applyThemedScrollbars(view: android.view.View, theme: AppTheme = getSelectedTheme()) {
-        // Get theme-specific scrollbar drawables
-        val (trackRes, thumbRes) = when (theme) {
-            AppTheme.WindowsXP -> R.drawable.scrollbar_track_xp to R.drawable.scrollbar_thumb_xp
-            AppTheme.WindowsClassic -> R.drawable.scrollbar_track_98 to R.drawable.win98_start_menu_border
-            AppTheme.WindowsVista -> R.drawable.scrollbar_track_vista to R.drawable.scrollbar_thumb_vista
-        }
+        val trackRes = R.drawable.win11_scrollbar_track
+        val thumbRes = R.drawable.win11_scrollbar_thumb
 
-        // Get theme-appropriate drawables
         val trackDrawable = androidx.core.content.ContextCompat.getDrawable(context, trackRes) ?: return
         val thumbDrawable = androidx.core.content.ContextCompat.getDrawable(context, thumbRes) ?: return
 
-        // API 29+ has direct methods to set scrollbar drawables
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            // Set scrollbar size to 16dp
-            val scrollBarSize = (16 * context.resources.displayMetrics.density).toInt()
-
-            // Enable vertical scrollbar
+            val scrollBarSize = (6 * context.resources.displayMetrics.density).toInt()
             view.isVerticalScrollBarEnabled = true
             view.scrollBarStyle = android.view.View.SCROLLBARS_OUTSIDE_OVERLAY
-            view.isScrollbarFadingEnabled = false
+            view.isScrollbarFadingEnabled = true
 
-            // Set scrollbar size if the view supports it
             when (view) {
                 is android.widget.TextView -> view.scrollBarSize = scrollBarSize
                 is androidx.recyclerview.widget.RecyclerView -> view.scrollBarSize = scrollBarSize
             }
 
-            // Use the direct API methods (API 29+)
             view.setVerticalScrollbarThumbDrawable(thumbDrawable)
             view.setVerticalScrollbarTrackDrawable(trackDrawable)
-
-            android.util.Log.d("ThemeManager", "Successfully set scrollbar drawables using API 29+ methods")
-        } else {
-            // Fallback for older APIs - just log that it's not supported
-            android.util.Log.w("ThemeManager", "Themed scrollbars require API 29+, current API is ${android.os.Build.VERSION.SDK_INT}")
         }
     }
 
     companion object {
         private const val KEY_SELECTED_THEME = "selected_theme"
+        private const val KEY_ACCENT_COLOR = "accent_color"
     }
 }

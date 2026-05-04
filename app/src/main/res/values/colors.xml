@@ -47,4 +47,37 @@
     <color name="vista_title_bar_active">#FF1D5D8C</color>
     <color name="vista_title_bar_inactive">#FF808080</color>
     <color name="vista_border_color">#FF0078D7</color>
+
+    <!-- Windows 11 Dark Theme Colors -->
+    <color name="win11_background">#FF202020</color>
+    <color name="win11_surface">#FF2D2D2D</color>
+    <color name="win11_surface_variant">#FF383838</color>
+    <color name="win11_surface_bright">#FF404040</color>
+    <color name="win11_surface_container">#FF1A1A1A</color>
+    <color name="win11_taskbar">#CC1C1C1C</color>
+    <color name="win11_taskbar_solid">#FF1C1C1C</color>
+    <color name="win11_title_bar">#FF2B2B2B</color>
+    <color name="win11_title_bar_inactive">#FF2B2B2B</color>
+    <color name="win11_border">#FF3D3D3D</color>
+    <color name="win11_border_focused">#FF505050</color>
+    <color name="win11_text_primary">#FFFFFFFF</color>
+    <color name="win11_text_secondary">#FFB0B0B0</color>
+    <color name="win11_text_disabled">#FF6D6D6D</color>
+    <color name="win11_accent_default">#FFFF4444</color>
+    <color name="win11_accent_hover">#FFFF6666</color>
+    <color name="win11_accent_pressed">#FFCC3333</color>
+    <color name="win11_search_background">#FF383838</color>
+    <color name="win11_search_text">#FF999999</color>
+    <color name="win11_close_hover">#FFC42B1C</color>
+    <color name="win11_minimize_hover">#FF404040</color>
+    <color name="win11_scrollbar_track">#FF2D2D2D</color>
+    <color name="win11_scrollbar_thumb">#FF555555</color>
+    <color name="win11_explorer_sidebar">#FF252525</color>
+    <color name="win11_explorer_content">#FF1E1E1E</color>
+    <color name="win11_start_menu_bg">#FF2C2C2C</color>
+    <color name="win11_quick_settings_bg">#FF2C2C2C</color>
+    <color name="win11_toggle_on">#FF4CC2FF</color>
+    <color name="win11_toggle_off">#FF555555</color>
+    <color name="win11_divider">#FF404040</color>
+    <color name="win11_hover">#15FFFFFF</color>
 </resources>

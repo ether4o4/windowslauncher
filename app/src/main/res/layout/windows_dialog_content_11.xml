@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:clipChildren="false"
+    android:clickable="true"
+    android:clipToPadding="false">
+
+    <!-- Movable window frame with Win11 rounded corners -->
+    <LinearLayout
+        android:id="@+id/window_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:elevation="20dp">
+
+        <!-- Title Bar (dark, rounded top corners) -->
+        <LinearLayout
+            android:id="@+id/dialog_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:background="@drawable/win11_title_bar_background"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="0dp">
+
+            <!-- XP title bar image views kept for compatibility (hidden) -->
+            <ImageView
+                android:id="@+id/dialog_xp_title_bar_left"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+            <ImageView
+                android:id="@+id/dialog_xp_title_bar_middle"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+            <ImageView
+                android:id="@+id/dialog_xp_title_bar_right"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="gone" />
+
+            <!-- Window icon -->
+            <ImageView
+                android:id="@+id/dialog_window_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_dialog_window"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone" />
+
+            <!-- Title text -->
+            <TextView
+                android:id="@+id/dialog_title_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dialog Title"
+                android:textColor="@color/win11_text_primary"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginEnd="8dp"
+                android:fontFamily="@font/segoeui_regular" />
+
+            <!-- Minimize button -->
+            <FrameLayout
+                android:layout_width="46dp"
+                android:layout_height="32dp"
+                android:background="@drawable/win11_window_control_background">
+
+                <ImageView
+                    android:id="@+id/dialog_minimize_button"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/window_minimize"
+                    android:tint="@color/win11_text_primary"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+
+            <!-- Maximize button -->
+            <FrameLayout
+                android:layout_width="46dp"
+                android:layout_height="32dp"
+                android:background="@drawable/win11_window_control_background">
+
+                <ImageView
+                    android:id="@+id/dialog_maximize_button"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/window_maximize"
+                    android:tint="@color/win11_text_primary"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+
+            <!-- Close button (red hover) -->
+            <FrameLayout
+                android:layout_width="46dp"
+                android:layout_height="32dp"
+                android:background="@drawable/win11_close_button_background">
+
+                <ImageView
+                    android:id="@+id/dialog_close_button"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/window_close"
+                    android:tint="@color/win11_text_primary"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Content Area with border -->
+        <FrameLayout
+            android:id="@+id/window_border"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:background="@drawable/win11_window_border">
+
+            <LinearLayout
+                android:id="@+id/dialog_content_area"
+                android:clickable="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@color/win11_surface" />
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

@@ -128,6 +128,7 @@ class IconManager(private val context: Context) {
         AppTheme.WindowsClassic -> KEY_CUSTOM_ICONS_98
         AppTheme.WindowsXP -> KEY_CUSTOM_ICONS_XP
         AppTheme.WindowsVista -> KEY_CUSTOM_ICONS_VISTA
+        AppTheme.Windows11 -> "custom_icons_11"
     }
 
     companion object {

@@ -180,8 +180,8 @@ class WindowsDialog @JvmOverloads constructor(
         contentArea = findViewById(R.id.dialog_content_area)
         windowIcon = findViewById(R.id.dialog_window_icon)
 
-        // Get border frame only for Windows XP theme
-        if (currentTheme is AppTheme.WindowsXP || currentTheme is AppTheme.WindowsVista) {
+        // Get border frame for XP, Vista, and Win11 themes
+        if (currentTheme is AppTheme.WindowsXP || currentTheme is AppTheme.WindowsVista || currentTheme is AppTheme.Windows11) {
             windowBorder = findViewById(R.id.window_border)
 
 
@@ -1323,7 +1323,11 @@ class WindowsDialog @JvmOverloads constructor(
         if (isBorderless) return
 
         if (::titleBar.isInitialized) {
-            if(currentTheme is AppTheme.WindowsClassic || currentTheme is AppTheme.WindowsVista) {
+            if (currentTheme is AppTheme.Windows11) {
+                titleBar.setBackgroundResource(R.drawable.win11_title_bar_background)
+                windowBorder?.setBackgroundResource(R.drawable.win11_window_border)
+                titleText.setTextColor(android.graphics.Color.parseColor("#FFFFFF"))
+            } else if(currentTheme is AppTheme.WindowsClassic || currentTheme is AppTheme.WindowsVista) {
                 val activeBackground = if (currentTheme is AppTheme.WindowsClassic) {
                     R.drawable.windows_98_dialog_title_bar
                 } else {
@@ -1352,7 +1356,11 @@ class WindowsDialog @JvmOverloads constructor(
         if (isBorderless) return
 
         if (::titleBar.isInitialized) {
-            if (currentTheme is AppTheme.WindowsClassic) {
+            if (currentTheme is AppTheme.Windows11) {
+                titleBar.setBackgroundResource(R.drawable.win11_title_bar_inactive)
+                windowBorder?.setBackgroundResource(R.drawable.win11_window_border_inactive)
+                titleText.setTextColor(android.graphics.Color.parseColor("#808080"))
+            } else if (currentTheme is AppTheme.WindowsClassic) {
                 titleBar.setBackgroundResource(R.drawable.windows_98_dialog_title_bar_inactive)
             }
             else if (currentTheme is AppTheme.WindowsXP){

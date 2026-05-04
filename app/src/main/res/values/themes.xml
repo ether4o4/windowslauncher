@@ -112,6 +112,34 @@
         <item name="android:textColor">#666666</item>
     </style>
 
+    <!-- Windows 11 Theme -->
+    <style name="Theme.GokiXP.Win11" parent="Base.Theme.GokiXP">
+        <item name="primaryFontFamily">@font/segoeui_font_family</item>
+        <item name="secondaryFontFamily">@font/segoeui_font_family</item>
+        <item name="scrollbarTrackDrawable">@drawable/win11_scrollbar_track</item>
+        <item name="scrollbarThumbDrawable">@drawable/win11_scrollbar_thumb</item>
+        <item name="winButtonStyle">@style/Win11Button</item>
+        <item name="windowBackgroundColor">@color/win11_surface</item>
+        <item name="dialogBackgroundColor">@color/win11_surface</item>
+        <item name="menuBarBackground">@drawable/win11_title_bar_background</item>
+        <item name="solitareGreen">@color/solitare_green</item>
+        <item name="notificationBubble">@drawable/win11_notification_bubble</item>
+        <item name="notificationBubbleTitleColor">@color/win11_accent_default</item>
+    </style>
+
+    <style name="Win11Button" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/win11_text_primary</item>
+        <item name="android:fontFamily">@font/segoeui_font_family</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:background">@drawable/win11_button_background</item>
+        <item name="android:gravity">center</item>
+    </style>
+
     <!-- Light AlertDialog Theme -->
     <style name="LightAlertDialog" parent="Theme.Material3.Light.Dialog.Alert">
         <item name="android:textColorPrimary">#000000</item>
